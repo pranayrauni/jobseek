@@ -54,10 +54,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
       formData.append("file", input.file);
     }
 
-    // let newObject = {};
-    // for (let [key, value] of formData.entries()) {
-    //   newObject[key] = value;
-    // }
+
 
     try {
       setLoading(true);
