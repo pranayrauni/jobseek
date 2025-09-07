@@ -18,7 +18,7 @@ const JobDescription = () => {
   const {user} = useSelector(store => store.auth);
   const dispatch = useDispatch();
 
-  const isAlreadyApplied = oneJob?.applications?.some(application => application.applicant === user._id) || false;
+  const isAlreadyApplied = oneJob?.applications?.some(application => application.applicant === user?._id) || false;
   const [isApplied, setIsApplied] = useState(isAlreadyApplied)
 
   const applyJobHandler = async() => {
