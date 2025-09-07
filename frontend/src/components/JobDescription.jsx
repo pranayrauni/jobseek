@@ -1,11 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { JOB_API_END_POINT } from "@/utils/constant";
+import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "@/utils/constant";
 import { setOneJob } from "@/redux/jobSlice";
+import { toast } from "sonner";
 
 const JobDescription = () => {
 
@@ -17,8 +18,23 @@ const JobDescription = () => {
   const {user} = useSelector(store => store.auth);
   const dispatch = useDispatch();
 
-  const isApplied = oneJob?.applications?.some(application => application.applicant === user._id) || false;
+  const isAlreadyApplied = oneJob?.applications?.some(application => application.applicant === user._id) || false;
+  const [isApplied, setIsApplied] = useState(isAlreadyApplied)
 
+  const applyJobHandler = async() => {
+    try {
+      const res = await axios.get(`${APPLICATION_API_END_POINT}/apply/${jobId}`, {withCredentials: true});
+      if(res.data.success){
+        setIsApplied(true);
+        const updatedOneJob = {...oneJob, applications: [...oneJob.applications, {applicant: user?._id}]}
+        dispatch(setOneJob(updatedOneJob));
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.response.data.message)
+    }
+  }
 
   useEffect(() => {
     const fetchOneJob = async() => {
@@ -26,6 +42,7 @@ const JobDescription = () => {
             const res = await axios.get(`${JOB_API_END_POINT}/${jobId}`, {withCredentials: true})
             if(res.data.success){
                 dispatch(setOneJob(res.data.job));
+                setIsApplied(res.data.job.applications.some((application => application.applicant === user?._id)))
             }
         } catch (error) {
             console.log(error)
@@ -52,6 +69,7 @@ const JobDescription = () => {
           </div>
         </div>
         <Button
+          onClick={isApplied ? null : applyJobHandler}
           disabled={isApplied}
           className={`rounded-lg ${
             isApplied
