@@ -11,7 +11,7 @@ const useGetCompanyById = (companyId) => {
     const fetchSingleCompany = async () => {
       try {
         const res = await axios.get(
-          `${COMPANY_API_END_POINT}/comapnies/${companyId}`,
+          `${COMPANY_API_END_POINT}/companies/${companyId}`,
           { withCredentials: true }
         );
         if (res.data.success) {
