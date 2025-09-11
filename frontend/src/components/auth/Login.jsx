@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../shared/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -13,7 +13,6 @@ import { setLoading, setUser } from "@/redux/authSlice";
 import store from "@/redux/store";
 import { Loader2 } from "lucide-react";
 
-
 const Login = () => {
   const [input, setInput] = useState({
     email: "",
@@ -21,7 +20,7 @@ const Login = () => {
     role: "",
   });
 
-  const {loading} = useSelector(store => store.auth)
+  const { loading, user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -29,32 +28,36 @@ const Login = () => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-const submitHandler = async (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-   
 
     try {
       dispatch(setLoading(true));
-        const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
-            headers: {
-                "Content-Type": "application/json"
-            },
-            withCredentials: true,
-        })
+      const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
 
-        if(res.data.success){
-            dispatch(setUser(res.data.user));
-            navigate("/")
-            toast.success(res.data.message);
-        }
+      if (res.data.success) {
+        dispatch(setUser(res.data.user));
+        navigate("/");
+        toast.success(res.data.message);
+      }
     } catch (error) {
-        console.log(error)
-        toast.error(error.response.data.message)
-
+      console.log(error);
+      toast.error(error.response.data.message);
     } finally {
-      dispatch(setLoading(false))
+      dispatch(setLoading(false));
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, []);
   return (
     <div>
       <Navbar />
@@ -114,12 +117,17 @@ const submitHandler = async (e) => {
               </div>
             </RadioGroup>
           </div>
-          {
-            loading ? <Button className="w-full my-4"> <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Plaese wait</Button> : <Button type="submit" className="w-full my-4">
-            Login
-          </Button>
-          }
-          
+          {loading ? (
+            <Button className="w-full my-4">
+              {" "}
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Plaese wait
+            </Button>
+          ) : (
+            <Button type="submit" className="w-full my-4">
+              Login
+            </Button>
+          )}
+
           <span className="text-sm">
             Don't have an account?{" "}
             <Link to="/signup" className="text-blue-600">
