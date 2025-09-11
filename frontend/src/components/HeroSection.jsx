@@ -1,4 +1,4 @@
-import { setSearchQuery } from "@/redux/jobSlice";
+import { setSearchedQuery } from "@/redux/jobSlice";
 import { Search } from "lucide-react";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -10,7 +10,7 @@ const HeroSection = () => {
   const navigate = useNavigate();
 
   const searchJobHandler = () => {
-    dispatch(setSearchQuery(query));
+    dispatch(setSearchedQuery(query));
     navigate("/browse")
   }
   

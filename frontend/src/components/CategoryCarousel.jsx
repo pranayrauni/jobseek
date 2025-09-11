@@ -9,7 +9,7 @@ import {
 import { Button } from "./ui/button";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setSearchQuery } from "@/redux/jobSlice";
+import { setSearchedQuery } from "@/redux/jobSlice";
 
 const category = [
   "Frontend Developer",
@@ -24,7 +24,7 @@ const CategoryCarousel = () => {
   const navigate = useNavigate();
 
   const searchJobHandler = (query) => {
-    dispatch(setSearchQuery(query));
+    dispatch(setSearchedQuery(query));
     navigate("/browse");
   };
 
